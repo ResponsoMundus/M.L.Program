@@ -17,18 +17,20 @@ import sys
 import pickle
 sys.path.append("../tools/")
 from feature_format import featureFormat, targetFeatureSplit
-dictionary = pickle.load( open("../final_project/final_project_dataset_modified.pkl", "r") )
+Dictionary = pickle.load(open("../final_project/final_project_dataset_modified.pkl", "r"))
+
 
 ### list the features you want to look at--first item in the 
 ### list will be the "target" feature
 # features_list = ["bonus", "salary"]
-def finance_regression(dictionary, features_list):
+def finance_regression(dictionary, features_list, fit_test=False):
     data = featureFormat(dictionary, features_list, remove_any_zeroes=True)
     target, features = targetFeatureSplit(data)
 
     ### training-testing split needed in regression, just like classification
     from sklearn.cross_validation import train_test_split
-    feature_train, feature_test, target_train, target_test = train_test_split(features, target, test_size=0.5, random_state=42)
+    feature_train, feature_test, target_train, target_test = train_test_split(features, target, test_size=0.05,
+                                                                              random_state=42)
     train_color = "b"
     test_color = "r"
 
@@ -40,16 +42,17 @@ def finance_regression(dictionary, features_list):
     reg = LinearRegression()
     reg.fit(feature_train, target_train)
 
-    print "Slope And Intercept: {0}, {1}".format(reg.coef_[0], reg.intercept_)
-    print "Regression Score Of Training Data: {0}".format(reg.score(feature_train, target_train))
-    print "Regression Score Of Testing Data: {0}".format(reg.score(feature_test, target_test))
-	
+    if fit_test:
+        print "Slope And Intercept: {0}, {1}".format(round(reg.coef_[0], 3), round(reg.intercept_, 3))
+        print "Regression Score Of Training Data: {0}".format(round(reg.score(feature_train, target_train), 3))
+        print "Regression Score Of Testing Data: {0}".format(round(reg.score(feature_test, target_test), 3))
+
     ### draw the scatterplot, with color-coded training and testing points
     import matplotlib.pyplot as plt
     for feature, target in zip(feature_test, target_test):
-        plt.scatter( feature, target, color=test_color ) 
+        plt.scatter(feature, target, color=test_color)
     for feature, target in zip(feature_train, target_train):
-        plt.scatter( feature, target, color=train_color ) 
+        plt.scatter(feature, target, color=train_color)
 
     ### labels for the legend
     plt.scatter(feature_test[0], target_test[0], color=test_color, label="test")
@@ -57,10 +60,16 @@ def finance_regression(dictionary, features_list):
 
     ### draw the regression line, once it's coded
     try:
-        plt.plot(feature_test, reg.predict(feature_test[:2]))
+        plt.plot(feature_test, reg.predict(feature_test))
     except NameError:
         pass
     plt.xlabel(features_list[1])
     plt.ylabel(features_list[0])
     plt.legend()
     plt.show()
+
+featuresList = ["bonus", "salary"]
+finance_regression(Dictionary, featuresList, True)
+
+featuresList = ["bonus", "long_term_incentive"]
+finance_regression(Dictionary, featuresList, True)
