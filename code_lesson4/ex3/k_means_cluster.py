@@ -66,8 +66,18 @@ from sklearn.cluster import KMeans
 kmeans = KMeans(n_clusters=2).fit(finance_features)
 pred = kmeans.predict(finance_features)
 
-salary = [ff[0] for ff in finance_features]
-stock = [ff[1] for ff in finance_features]
+n = 0.0
+salary = []
+stock = []
+
+for i in range(len(finance_features)):
+    salary.append(finance_features[i][0])
+    stock.append(finance_features[i][1])
+    if poi[i] == pred[i]:
+        n += 1
+
+print "Accuracy: {0}".format(n / len(pred))
+
 print "Salary Range: {0}".format(max(salary) - min(salary))
 print "Stock Range: {0}".format(max(stock) - min(stock))
 
