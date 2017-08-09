@@ -29,7 +29,7 @@ def finance_regression(dictionary, features_list, fit_test=False):
 
     ### training-testing split needed in regression, just like classification
     from sklearn.cross_validation import train_test_split
-    feature_train, feature_test, target_train, target_test = train_test_split(features, target, test_size=0.05,
+    feature_train, feature_test, target_train, target_test = train_test_split(features, target, test_size=0.5,
                                                                               random_state=42)
     train_color = "b"
     test_color = "r"
@@ -43,20 +43,20 @@ def finance_regression(dictionary, features_list, fit_test=False):
     reg.fit(feature_train, target_train)
 
     if fit_test:
-        print "Slope And Intercept: {0}, {1}".format(round(reg.coef_[0], 3), round(reg.intercept_, 3))
-        print "Regression Score Of Training Data: {0}".format(round(reg.score(feature_train, target_train), 3))
-        print "Regression Score Of Testing Data: {0}".format(round(reg.score(feature_test, target_test), 3))
+        print "\tSlope And Intercept: {0}, {1}".format(round(reg.coef_[0], 3), round(reg.intercept_, 3))
+        print "\tRegression Score Of Training Data: {0}".format(round(reg.score(feature_train, target_train), 3))
+        print "\tRegression Score Of Testing Data: {0}".format(round(reg.score(feature_test, target_test), 3))
 
     ### draw the scatterplot, with color-coded training and testing points
     import matplotlib.pyplot as plt
     for feature, target in zip(feature_test, target_test):
-        plt.scatter(feature, target, color=test_color)
+        plt.scatter(feature[0], target, color=test_color)
     for feature, target in zip(feature_train, target_train):
-        plt.scatter(feature, target, color=train_color)
+        plt.scatter(feature[0], target, color=train_color)
 
     ### labels for the legend
-    plt.scatter(feature_test[0], target_test[0], color=test_color, label="test")
-    plt.scatter(feature_test[0], target_test[0], color=train_color, label="train")
+    plt.scatter(feature_test[0][0], target_test[0], color=test_color, label="test")
+    plt.scatter(feature_test[0][0], target_test[0], color=train_color, label="train")
 
     ### draw the regression line, once it's coded
     try:
@@ -69,7 +69,13 @@ def finance_regression(dictionary, features_list, fit_test=False):
     plt.show()
 
 featuresList = ["bonus", "salary"]
+print "Using Salary:"
 finance_regression(Dictionary, featuresList, True)
 
 featuresList = ["bonus", "long_term_incentive"]
+print "Using LTI:"
+finance_regression(Dictionary, featuresList, True)
+
+featuresList = ["bonus", "salary", "long_term_incentive"]
+print "Using Both:"
 finance_regression(Dictionary, featuresList, True)
