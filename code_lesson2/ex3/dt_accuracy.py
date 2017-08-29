@@ -34,6 +34,6 @@ def submitAccuracies():
     acc_min_samples_split_50 = accuracy_score(labels_test, prediction2)
 
     return {"acc_min_samples_split_2": round(acc_min_samples_split_2, 3),
-             "acc_min_samples_split_50": round(acc_min_samples_split_50, 3)}
+            "acc_min_samples_split_50": round(acc_min_samples_split_50, 3)}
 
 print submitAccuracies()

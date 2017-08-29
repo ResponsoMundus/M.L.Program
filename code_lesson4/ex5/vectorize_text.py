@@ -44,7 +44,7 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
         if temp_counter < 200:
             path = os.path.join('..', path[:-1])
             print path
-            # email = open(path,"r")
+            # email = open(path, "r")
             email = open("..\\" + path, "r")
 
             ### use parseOutText to extract the text from the opened email
@@ -55,24 +55,25 @@ for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
             ### ["sara", "shackleton", "chris", "germani"]
             for sstr in ["sara", "shackleton", "chris", "germani"]:
                 str = str.replace(sstr, '')
-            words = str.split()
+            # words = str.split()
             # words_stemmed = []
-            words_stemmed = {}
+            # words_stemmed = {}
 
-            from nltk.stem import SnowballStemmer
-            stemmer = SnowballStemmer("english")
+            # from nltk.stem import SnowballStemmer
+            # stemmer = SnowballStemmer("english")
 
-            for word in words:
-                word_stemmed = stemmer.stem(word)
-                # if word_stemmed not in words_stemmed:
-                    # words_stemmed.append(word_stemmed)
-                if word_stemmed in words_stemmed.keys():
-                    words_stemmed[word_stemmed] += 1
-                else:
-                    words_stemmed[word_stemmed] = 1
+            # for word in words:
+            #     word_stemmed = stemmer.stem(word)
+            #     # if word_stemmed not in words_stemmed:
+            #         # words_stemmed.append(word_stemmed)
+            #     if word_stemmed in words_stemmed.keys():
+            #         words_stemmed[word_stemmed] += 1
+            #     else:
+            #         words_stemmed[word_stemmed] = 1
 
             ### append the text to word_data
-            word_data.append(words_stemmed)
+            # word_data.append(words_stemmed)
+            word_data.append(str.replace('\n', ' ').strip())
 
             ### append a 0 to from_data if email is from Sara, and 1 if email is from Chris
             if name == "sara":
@@ -89,9 +90,14 @@ from_chris.close()
 pickle.dump(word_data, open("your_word_data.pkl", "w"))
 pickle.dump(from_data, open("your_email_authors.pkl", "w"))
 
-
-
-
 ### in Part 4, do TfIdf vectorization here
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+vectorizer = TfidfVectorizer(stop_words="english", lowercase=True)
+vectorizer.fit_transform(word_data)
+
+features_names = vectorizer.get_feature_names()
+
+print "The Number Of Different Words: {0}".format(len(features_names))
 
 
